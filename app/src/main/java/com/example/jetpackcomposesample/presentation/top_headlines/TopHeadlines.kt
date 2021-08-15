@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -172,14 +173,28 @@ private fun MediumArticle(
             .padding(16.dp)
     ) {
         ConstraintLayout {
-            val (source, title, publishedAt, image) = createRefs()
+            val (icon, source, title, publishedAt, image) = createRefs()
+            Image(
+                painter = rememberImagePainter(
+                    data = "https://www.google.com/s2/favicons?domain=${article.url}"
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .constrainAs(icon) {
+                        start.linkTo(parent.start)
+                        top.linkTo(source.top)
+                        bottom.linkTo(source.bottom)
+                        height = Dimension.fillToConstraints
+                    }
+                    .aspectRatio(1f)
+            )
             CompositionLocalProvider(LocalContentAlpha provides 0.6f) {
                 Text(
                     text = article.source.name,
                     style = Typography.caption,
                     modifier = Modifier.constrainAs(source) {
                         top.linkTo(parent.top)
-                        start.linkTo(parent.start)
+                        start.linkTo(icon.end, 8.dp)
                     }
                 )
                 Text(
