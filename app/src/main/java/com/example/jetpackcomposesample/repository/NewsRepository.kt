@@ -19,7 +19,7 @@ private class NewsDataRepository @Inject constructor(
 ) : NewsRepository {
 
     companion object {
-        private const val INITIAL_PAGE = 0
+        private const val INITIAL_PAGE = 1
     }
 
     override fun topHeadlinesSource(category: String): PagingSource<Int, Article> {
