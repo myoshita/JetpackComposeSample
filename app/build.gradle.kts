@@ -5,7 +5,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.30"
     id("com.google.secrets_gradle_plugin") version "0.5"
 }
 
@@ -49,7 +49,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.1"
+        kotlinCompilerExtensionVersion = "1.0.3"
     }
     packagingOptions {
         resources {
@@ -62,25 +62,26 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-rc01")
 
     // compose
-    val composeVersion = "1.0.1"
+    val composeVersion = "1.0.3"
     implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.activity:activity-compose:1.3.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-rc01")
 
     // accompanist
-    val accompanistVersion = "0.16.1"
+    val accompanistVersion = "0.19.0"
     implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
 
     // paging
     val paging_version = "3.0.1"
     implementation("androidx.paging:paging-runtime:$paging_version")
-    implementation("androidx.paging:paging-compose:1.0.0-alpha12")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha13")
 
     // browser
     implementation("androidx.browser:browser:1.3.0")
@@ -96,12 +97,12 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     // coil
-    val coilVersion = "1.3.2"
+    val coilVersion = "1.4.0"
     implementation("io.coil-kt:coil:$coilVersion")
     implementation("io.coil-kt:coil-compose:$coilVersion")
 
     // coroutines
-    val coroutinesVersion = "1.5.1"
+    val coroutinesVersion = "1.5.2"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
@@ -114,7 +115,7 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
 
-    testImplementation("junit:junit:4.+")
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
