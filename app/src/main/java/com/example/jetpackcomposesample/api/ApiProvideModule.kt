@@ -1,12 +1,10 @@
 package com.example.jetpackcomposesample.api
 
-import android.content.Context
 import com.example.jetpackcomposesample.BuildConfig
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -22,7 +20,7 @@ class ApiProvideModule {
 
     @Provides
     @Singleton
-    fun provideClient(@ApplicationContext context: Context): OkHttpClient {
+    fun provideClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {

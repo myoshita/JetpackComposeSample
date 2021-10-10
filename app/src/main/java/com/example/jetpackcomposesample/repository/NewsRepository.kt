@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.jetpackcomposesample.api.NewsApi
 import com.example.jetpackcomposesample.model.Article
+import com.example.jetpackcomposesample.model.TopHeadlinesResponse.Status.OK
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -30,7 +31,7 @@ private class NewsDataRepository @Inject constructor(
                     api.topHeadlines(category = category, page = page)
                 }.fold(
                     onSuccess = {
-                        if (it.status == "ok") {
+                        if (it.status == OK) {
                             LoadResult.Page(
                                 data = it.articles,
                                 prevKey = params.key,
