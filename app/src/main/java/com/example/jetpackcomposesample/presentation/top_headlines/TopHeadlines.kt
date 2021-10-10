@@ -7,9 +7,7 @@ import androidx.browser.customtabs.CustomTabsIntent.SHARE_STATE_ON
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -70,17 +68,21 @@ enum class Category {
 fun TopHeadlinesScreen(
     topHeadlinesViewModel: TopHeadlinesViewModel = viewModel()
 ) {
-    val resource = topHeadlinesViewModel.resource.collectAsLazyPagingItems()
+    val pagingItems = topHeadlinesViewModel.state.collectAsLazyPagingItems()
+    val context = LocalContext.current
 
-    LaunchedEffect(resource.loadState) {
+    LaunchedEffect(pagingItems.loadState) {
         // TODO error handling
     }
 
     TopHeadlinesScreen(
-        articles = resource,
+        articles = pagingItems,
+        onClickArticle = {
+            openBrowser(context, it.url)
+        }
     )
 
-    if (resource.loadState.append is LoadState.Loading) {
+    if (pagingItems.loadState.append is LoadState.Loading) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -93,9 +95,8 @@ fun TopHeadlinesScreen(
 @Composable
 private fun TopHeadlinesScreen(
     articles: LazyPagingItems<Article>,
-    modifier: Modifier = Modifier,
+    onClickArticle: (Article) -> Unit,
 ) {
-    val context = LocalContext.current
     val toolbarHeight = 48.dp
     val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.roundToPx().toFloat() }
     val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
@@ -121,29 +122,23 @@ private fun TopHeadlinesScreen(
                     if (index == 0 && article.urlToImage.isNullOrBlank().not()) {
                         LargeArticle(
                             article = article,
-                            onClickArticle = {
-                                context.openBrowser(it.url)
-                            }
+                            onClickArticle = onClickArticle
                         )
                     } else {
                         MediumArticle(
                             article = article,
-                            onClickArticle = {
-                                context.openBrowser(it.url)
-                            },
+                            onClickArticle = onClickArticle,
                         )
                     }
                 }
             }
-            Column {
-                TopBar(
-                    modifier = Modifier
-                        .height(toolbarHeight)
-                        .offset {
-                            IntOffset(x = 0, y = toolbarOffsetHeightPx.value.roundToInt())
-                        }
-                )
-            }
+            TopBar(
+                modifier = Modifier
+                    .height(toolbarHeight)
+                    .offset {
+                        IntOffset(0, toolbarOffsetHeightPx.value.roundToInt())
+                    }
+            )
         }
     )
 }
@@ -173,28 +168,14 @@ private fun MediumArticle(
             .padding(16.dp)
     ) {
         ConstraintLayout {
-            val (icon, source, title, publishedAt, image) = createRefs()
-            Image(
-                painter = rememberImagePainter(
-                    data = "https://www.google.com/s2/favicons?domain=${article.url}"
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .constrainAs(icon) {
-                        start.linkTo(parent.start)
-                        top.linkTo(source.top)
-                        bottom.linkTo(source.bottom)
-                        height = Dimension.fillToConstraints
-                    }
-                    .aspectRatio(1f)
-            )
+            val (source, title, publishedAt, image) = createRefs()
             CompositionLocalProvider(LocalContentAlpha provides 0.6f) {
                 Text(
                     text = article.source.name,
                     style = Typography.caption,
                     modifier = Modifier.constrainAs(source) {
                         top.linkTo(parent.top)
-                        start.linkTo(icon.end, 8.dp)
+                        start.linkTo(parent.start)
                     }
                 )
                 Text(
@@ -316,13 +297,13 @@ private fun LargeArticle(
     }
 }
 
-private fun Context.openBrowser(url: String) {
+private fun openBrowser(context: Context, url: String) {
     val customTabsIntent = CustomTabsIntent.Builder()
         .setShareState(SHARE_STATE_ON)
         .setShowTitle(true)
         .build()
 
-    customTabsIntent.launchUrl(this, url.toUri())
+    customTabsIntent.launchUrl(context, url.toUri())
 }
 
 @Preview(showBackground = true)

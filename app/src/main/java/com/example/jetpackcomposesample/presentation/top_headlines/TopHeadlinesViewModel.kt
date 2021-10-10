@@ -15,15 +15,19 @@ class TopHeadlinesViewModel @Inject constructor(
     private val newsRepository: NewsRepository,
 ) : ViewModel() {
 
-    val resource = Pager(
+    private val pager = Pager(
         PagingConfig(
             pageSize = 1,
         )
     ) {
         newsRepository.topHeadlinesSource(Category.GENERAL.name)
-    }.flow.map {
-        it.map { article ->
-            article.copy(publishedAt = DateConverter.toJST(article.publishedAt))
-        }
     }
+
+    val state = pager
+        .flow
+        .map {
+            it.map { article ->
+                article.copy(publishedAt = DateConverter.toJST(article.publishedAt))
+            }
+        }
 }
